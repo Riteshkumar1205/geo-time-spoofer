@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Test Geolocation Injector",
+  "version": "0.4",
+  "description": "Inject a manual geolocation for testing and accept messages from LAN web UI (opens provided URL and overrides geolocation).",
+  "permissions": ["scripting","tabs"],
+  "host_permissions": [
+    "https://www.google.com/*",
+    "https://maps.google.com/*",
+    "https://docs.google.com/*",
+    "http://127.0.0.1:5000/*",
+    "http://localhost:5000/*",
+    "http://HOST_IP:5000/*"
+  ],
+  "action": { "default_popup": "popup.html" },
+  "background": {"service_worker": "background.js"},
+  "content_scripts": [
+    {
+      "matches": ["http://127.0.0.1:5000/*","http://localhost:5000/*","http://HOST_IP:5000/*"],
+      "js": ["content_script.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
