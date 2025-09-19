@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Manual Location → Open in Chrome / Google Form (LAN)</title>
+    <style>
+      body{font-family:system-ui,Arial;padding:24px;max-width:760px;margin:auto}
+      label{display:block;margin-top:8px}
+    </style>
+  </head>
+  <body>
+    <h2>Manual Location → Open in Chrome / Google Form (LAN)</h2>
+    <p>Enter coordinates and (optionally) a Google Form URL. Submitting will open the URL and post the coordinates to the extension which will inject the geolocation into that client's Chrome.</p>
+    {% if error %}
+      <p style="color:red">{{ error }}</p>
+    {% endif %}
+    <form method="post" id="locForm">
+      <label>Latitude: <input name="lat" required value="{{ lat or '28.416700' }}"></label>
+      <label>Longitude: <input name="lon" required value="{{ lon or '77.048800' }}"></label>
+      <label>Altitude (optional): <input name="alt" value="{{ alt or '250.12' }}"></label>
+      <label>Google Form URL (optional): <input name="form_url" value="{{ form_url or '' }}" placeholder="https://docs.google.com/forms/..." style="width:100%"></label>
+      <label>Zoom (maps fallback): <input name="zoom" value="18"></label>
+
+      <hr>
+      <h4>Open or inject</h4>
+      <label><input type="checkbox" name="open_in_chrome" value="1"> Open URL in Chrome on server</label>
+      <label>Chrome profile (optional): <input name="chrome_profile" placeholder="Default"></label>
+      <label><input type="checkbox" name="chrome_headless" value="1"> Launch headless on server (no visible window)</label>
+
+      <div style="margin-top:12px">
+        <button type="submit">Open target URL</button>
+      </div>
+    </form>
+
+    <hr>
+    <h4>Automatic injection to extension (LAN)</h4>
+    <p>If the extension is installed on your client, submitting will post a secure token + coords to the extension which opens the URL and overrides geolocation.</p>
+
+<script>
+const INJECT_TOKEN = 'REPLACE_WITH_TOKEN';
+
+document.getElementById('locForm').addEventListener('submit', function(ev){
+  try {
+    const lat = parseFloat(document.querySelector('input[name=lat]').value);
+    const lon = parseFloat(document.querySelector('input[name=lon]').value);
+    const alt = parseFloat(document.querySelector('input[name=alt]').value) || 0;
+    const formUrl = document.querySelector('input[name=form_url]').value || '';
+    // include formUrl in the message so extension can open it on the client
+    window.postMessage({type: 'INJECT_GEO', token: INJECT_TOKEN, lat: lat, lon: lon, alt: alt, url: formUrl}, '*');
+  } catch (e) {
+    console.warn('postMessage failed', e);
+  }
+});
+</script>
+  </body>
+</html>
