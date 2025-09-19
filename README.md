@@ -1,2 +1,11 @@
 # geo-time-spoofer
-A Linux-based tool with Flask + Chrome extension for manually setting custom latitude, longitude, altitude, and system time. Redirects to Google Maps with the spoofed location instead of the real one, supports GMT timezone, and can run on local or LAN IP.
+
+Dev/test toolkit to emit fake GPS (NMEA) to a virtual PTY, run processes under a fake time, and override browser geolocation for consenting clients on your LAN.
+
+Features:
+- Python NMEA generator (writes to a PTY)
+- libfaketime wrapper to run binaries with a faked clock
+- Flask LAN UI to enter lat/lon/alt and optionally a Google Form URL
+- Chrome extension (dev) to accept messages from the UI and inject `navigator.geolocation` into Chrome
+
+**IMPORTANT:** Only use on machines/browsers you own or have explicit permission to test. Keep the secret token private. Do not use to deceive others or commit illegal acts.
